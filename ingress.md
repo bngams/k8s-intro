@@ -13,3 +13,8 @@ Pour vérifier que les différents Pods liés au Ingress soient correctement dé
 kubectl get pods -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx --watch
 ```
 
+
+Commande curl pour intégrer le hostname
+```
+curl --header 'Host: hello-world.info' http://IP-cluster-node...
+```
