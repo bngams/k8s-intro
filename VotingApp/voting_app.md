@@ -26,6 +26,16 @@ git clone https://gitlab.com/voting-application/config
 cd config
 ```
 
+## Déploiement de la version 2 avec Kustomize
+
+Le répertoire *kustomize/overlays/v2* contient l'ensemble des spécifications des ressources utilisées par la Voting App (dans sa version 2). Pour chaque micro-service de l'application, il y a un Deployment et un Service. Seul le micro-service *worker* n'a pas de Service associé, c'est le seul micro-service qui n'est pas exposé dans le cluster (aucun microservice ne l'appelle).
+
+Lancez la commande suivante afin de créer l'ensemble des ressources de l'application:
+
+```
+$ kubectl apply -k ./
+````
+
 ## Déploiement de la version 2
 
 Le répertoire *manifests/v2* contient l'ensemble des spécifications des ressources utilisées par la Voting App (dans sa version 2). Pour chaque micro-service de l'application, il y a un Deployment et un Service. Seul le micro-service *worker* n'a pas de Service associé, c'est le seul micro-service qui n'est pas exposé dans le cluster (aucun microservice ne l'appelle).
