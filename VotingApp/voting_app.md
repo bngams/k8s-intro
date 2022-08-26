@@ -28,15 +28,6 @@ cd config
 
 Le dépôt ci dessus ne se focalise que sur les opérations "Ops" et les configurations IAS (Infra As Code), le code sources des applications se trouve [ici|https://github.com/dockersamples/example-voting-app]
 
-## Déploiement de la version 2 avec Kustomize
-
-Le répertoire *kustomize/overlays/v2* contient l'ensemble des spécifications des ressources utilisées par la Voting App (dans sa version 2). Pour chaque micro-service de l'application, il y a un Deployment et un Service. Seul le micro-service *worker* n'a pas de Service associé, c'est le seul micro-service qui n'est pas exposé dans le cluster (aucun microservice ne l'appelle).
-
-Lancez la commande suivante afin de créer l'ensemble des ressources de l'application:
-
-```
-$ kubectl apply -k ./
-````
 
 ## Déploiement de la version 3
 
@@ -82,6 +73,16 @@ Vous pouvez ensuite supprimer l'application avec la commande suivante:
 ```
 $ kubectl delete -f manifests/v3
 ```
+
+## Déploiement de la version 2 avec Kustomize
+
+Le répertoire *kustomize/overlays/v2* contient l'ensemble des spécifications des ressources utilisées par la Voting App (dans sa version 2). Pour chaque micro-service de l'application, il y a un Deployment et un Service. Seul le micro-service *worker* n'a pas de Service associé, c'est le seul micro-service qui n'est pas exposé dans le cluster (aucun microservice ne l'appelle).
+
+Lancez la commande suivante afin de créer l'ensemble des ressources de l'application:
+
+```
+$ kubectl apply -k ./
+````
 
 ## Déploiement de la version 2
 
