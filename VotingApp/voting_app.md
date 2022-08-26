@@ -26,6 +26,8 @@ git clone https://gitlab.com/voting-application/config
 cd config
 ```
 
+Le dépôt ci dessus ne se focalise que sur les opérations "Ops" et les configurations IAS (Infra As Code), le code sources des applications se trouve [ici|https://github.com/dockersamples/example-voting-app]
+
 ## Déploiement de la version 2 avec Kustomize
 
 Le répertoire *kustomize/overlays/v2* contient l'ensemble des spécifications des ressources utilisées par la Voting App (dans sa version 2). Pour chaque micro-service de l'application, il y a un Deployment et un Service. Seul le micro-service *worker* n'a pas de Service associé, c'est le seul micro-service qui n'est pas exposé dans le cluster (aucun microservice ne l'appelle).
@@ -35,6 +37,51 @@ Lancez la commande suivante afin de créer l'ensemble des ressources de l'applic
 ```
 $ kubectl apply -k ./
 ````
+
+## Déploiement de la version 3
+
+De la même façon, déployez la version 3 de l'application à l'aide de la commande suivante:
+
+````
+$ kubectl apply -f manifests/v3
+````
+
+Cette version contient des ressources différentes de celles créées pour la version 2, les bases de données ainsi que le worker ont été remplacé par le broker de messages NATS. Vous pouvez le vérifier avec la commande suivante:
+
+````
+$ kubectl get deploy,pod,svc
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nats        1/1     1            1           65s
+deployment.apps/result      1/1     1            1           65s
+deployment.apps/result-ui   1/1     1            1           65s
+deployment.apps/vote        1/1     1            1           64s
+deployment.apps/vote-ui     1/1     1            1           64s
+
+NAME                             READY   STATUS    RESTARTS   AGE
+pod/nats-b8dfd96c6-8qggd         1/1     Running   0          65s
+pod/result-7f6b5d9bb9-6vmkg      1/1     Running   0          65s
+pod/result-ui-68d87f557d-z6lch   1/1     Running   0          65s
+pod/vote-56db6bd44f-j9nvq        1/1     Running   0          64s
+pod/vote-ui-6cf4d5dbbd-2blnk     1/1     Running   0          64s
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP          17m
+service/nats         ClusterIP   10.104.60.14    <none>        4222/TCP         65s
+service/result       NodePort    10.96.13.183    <none>        80:30239/TCP     65s
+service/result-ui    NodePort    10.99.28.183    <none>        5001:31001/TCP   64s
+service/vote         NodePort    10.100.60.146   <none>        80:31002/TCP     64s
+service/vote-ui      NodePort    10.101.15.114   <none>        5000:31000/TCP   64s
+````
+
+L'interface de vote est sensiblement la même que celle de la version 2, il y a seulement un logo *nats* qui apparait lors du vote.
+
+![vote](./images/vote-nats.png)
+
+Vous pouvez ensuite supprimer l'application avec la commande suivante:
+
+```
+$ kubectl delete -f manifests/v3
+```
 
 ## Déploiement de la version 2
 
@@ -119,50 +166,6 @@ service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   13m
 
 Note: il est cependant possible que d'autres ressources soient listées si elles n'ont pas été supprimées à la fin des exercices précédents.
 
-## Déploiement de la version 3
-
-De la même façon, déployez la version 3 de l'application à l'aide de la commande suivante:
-
-````
-$ kubectl apply -f manifests/v3
-````
-
-Cette version contient des ressources différentes de celles créées pour la version 2, les bases de données ainsi que le worker ont été remplacé par le broker de messages NATS. Vous pouvez le vérifier avec la commande suivante:
-
-````
-$ kubectl get deploy,pod,svc
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nats        1/1     1            1           65s
-deployment.apps/result      1/1     1            1           65s
-deployment.apps/result-ui   1/1     1            1           65s
-deployment.apps/vote        1/1     1            1           64s
-deployment.apps/vote-ui     1/1     1            1           64s
-
-NAME                             READY   STATUS    RESTARTS   AGE
-pod/nats-b8dfd96c6-8qggd         1/1     Running   0          65s
-pod/result-7f6b5d9bb9-6vmkg      1/1     Running   0          65s
-pod/result-ui-68d87f557d-z6lch   1/1     Running   0          65s
-pod/vote-56db6bd44f-j9nvq        1/1     Running   0          64s
-pod/vote-ui-6cf4d5dbbd-2blnk     1/1     Running   0          64s
-
-NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP          17m
-service/nats         ClusterIP   10.104.60.14    <none>        4222/TCP         65s
-service/result       NodePort    10.96.13.183    <none>        80:30239/TCP     65s
-service/result-ui    NodePort    10.99.28.183    <none>        5001:31001/TCP   64s
-service/vote         NodePort    10.100.60.146   <none>        80:31002/TCP     64s
-service/vote-ui      NodePort    10.101.15.114   <none>        5000:31000/TCP   64s
-````
-
-L'interface de vote est sensiblement la même que celle de la version 2, il y a seulement un logo *nats* qui apparait lors du vote.
-
-![vote](./images/vote-nats.png)
-
-Vous pouvez ensuite supprimer l'application avec la commande suivante:
-
-```
-$ kubectl delete -f manifests/v3
-```
 
 ## En résumé
 
