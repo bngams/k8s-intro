@@ -16,7 +16,21 @@ Utiliser la commande suivante pour déployer Longhorn sur votre cluster.
 kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.3.0/deploy/longhorn.yaml
 ```
 
-Différents composants seront alors créés:
+Si vous rencontrez cette erreur:
+```
+error: resource mapping not found for name: "longhorn-psp" namespace: "" from "https://raw.githubusercontent.com/longhorn/longhorn/v1.3.1/deploy/longhorn.yaml": no matches for kind "PodSecurityPolicy" in version "policy/v1beta1"
+```
+
+Alors opter pour une version plus récente de longhorn (penser a faire un delete pour clean les éléments du précédent apply avant l'erreur): 
+
+```
+kube apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
+```
+
+Sources: https://github.com/longhorn/longhorn/issues/4003
+
+
+Si la commane apply s'exécute correctemet, différents composants seront alors créés:
 
 ```
 namespace/longhorn-system created
