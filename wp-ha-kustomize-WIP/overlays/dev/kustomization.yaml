@@ -1,0 +1,11 @@
+# prefix to be added to name of the resource
+namePrefix: dev-
+commonLabels:
+  env: dev
+# directory contains base yaml
+bases:
+  - ../../base
+# patch strategy
+patchesStrategicMerge:
+# - mysql-deployment-patch.yaml
+ - wordpress-deployment-patch.yaml

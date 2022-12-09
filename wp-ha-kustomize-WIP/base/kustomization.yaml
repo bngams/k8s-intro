@@ -1,0 +1,7 @@
+# commonLabels:
+#   app: wordpress
+
+resources:
+  - mysql-deployment.yaml
+  - wordpress-deployment.yaml
+
