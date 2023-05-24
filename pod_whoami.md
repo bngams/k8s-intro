@@ -11,17 +11,31 @@ Créez un fichier yaml *whoami.yaml* définissant un Pod ayant les propriétés 
 - image du container: *containous/whoami*
 - nom du container: *whoami*
 
+Exemple de fichier de configuration pour un pod: https://kubernetes.io/docs/concepts/workloads/pods/
+
 ### 2. Lancement du Pod
 
 Lancez le Pod à l'aide de *kubectl*
+
+```
+$ kubectl apply -f <conf yaml - nom du fichier, url fichier...>
+```
 
 ### 3. Vérification
 
 Listez les Pods lancés et assurez vous que le Pod *whoami* apparait bien dans cette liste.
 
+```
+$ kubectl get po
+```
+
 ### 4. Details du Pod
 
 Observez les détails du Pod à l'aide de *kubectl* et retrouvez l'information de l'image utilisée par le container *whoami*.
+
+```
+$ kubectl describe
+```
 
 ### 5. Accès à l'application via un port-forward
 
