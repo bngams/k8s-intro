@@ -6,7 +6,7 @@ Dans les cas précédents, nous avons vu comment créer des `Pods` manuellement.
 
 Ce deuxième exercice s'intéresse aux objets de déploiement qui gérent les `Pods` à votre place. Ces objets de déploiement permettent de donner une représentation logique de un ou plusieurs `Pods`. Ils sont appelés également `Charge de Travail` (`Workload` en anglais) dans la documentation officielle de [Kubernetes](https://kubernetes.io/docs/concepts/workloads/controllers/). Différents types d'objets de déploiement existent : `Deployment`, `StatefulSets`, `DaemonSets`, `Jobs` et `Cronjob`. Nous allons nous intéresser dans cet exercice aux objets de type `Deployment` qui aident à gérer des `Pods` de type _Stateless_. Ces objets sont capables de gérer la montée en charge horizontale via l'utilisation d'un objet de type `ReplicaSet`. 
 
-> Quelque soit le type d'installation choisi pour la mise en place de votre cluster Kubernetes, toutes les commandes ci-dessous devraient normalement fonctionner. Nous considérons qu'il existe un fichier `k3s.yaml` à la racine du dossier `microservices-kubernetes-gettingstarted-tutorial/`, si ce n'est pas le cas, merci de reprendre la mise en place d'un cluster Kubernetes. Il est important ensuite de s'assurer que la variable `KUBECONFIG` soit initialisée avec le chemin du fichier d'accès au cluster Kubernetes (`export KUBECONFIG=$PWD/k3s.yaml`).
+> Quelque soit le type d'installation choisi pour la mise en place de votre cluster Kubernetes, toutes les commandes ci-dessous devraient normalement fonctionner. 
 
 ## But
 
