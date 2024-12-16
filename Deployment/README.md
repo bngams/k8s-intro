@@ -1,4 +1,4 @@
-# Exercice 2 : créer et déployer une représentation logique de Pods avec les Deployments
+# Créer et déployer une représentation logique de Pods avec les Deployments
 
 Source: [repo mickaelbaron](https://github.com/mickaelbaron/microservices-kubernetes-gettingstarted-tutorial/tree/master) 
 
