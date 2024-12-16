@@ -16,12 +16,8 @@ Ce deuxième exercice s'intéresse aux objets de déploiement qui gérent les `P
 
 ## Étapes à suivre
 
-* Avant de commencer les étapes de cet exercice, assurez-vous que le `Namespace` créé dans l'exercice précédent `mynamespaceexercice1` soit supprimé. Si ce n'est pas le cas :
+* Avant de commencer les étapes de cet exercice, assurez-vous que les objets (pods, services, ingress, namespaces etc...) créés dans les cas précédents soient supprimés. Si ce n'est pas le cas :
 
-```
-$ kubectl delete namespace mynamespaceexercice1
-namespace "mynamespaceexercice1" deleted
-```
 
 * Créer dans le répertoire _exercice2-deployment/_ un fichier appelé _mynamespaceexercice2.yaml_ en ajoutant le contenu suivant :
 
