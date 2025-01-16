@@ -19,30 +19,31 @@ Ce deuxième exercice s'intéresse aux objets de déploiement qui gérent les `P
 * Avant de commencer les étapes de cet exercice, assurez-vous que les objets (pods, services, ingress, namespaces etc...) créés dans les cas précédents soient supprimés. Si ce n'est pas le cas :
 
 
-* Créer dans le répertoire _exercice2-deployment/_ un fichier appelé _mynamespaceexercice2.yaml_ en ajoutant le contenu suivant :
+* Créer dans le répertoire _exercice-deployment/_ un fichier appelé _mynamespaceexercice.yaml_ en ajoutant le contenu suivant :
 
 ```
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: mynamespaceexercice2
+  name: exercicedeployment
 ```
 
 * Créer ce `Namespace` dans notre cluster :
 
 ```
-$ kubectl apply -f exercice2-deployment/mynamespaceexercice2.yaml
-namespace/mynamespaceexercice2 created
+$ kubectl apply -f exercice-deployment/mynamespaceexercice.yaml
+namespace/exercicedeployment created
 ```
 
 Nous allons créer un objet de type `Deployment` qui est responsable des `Pods` qui gère. Ainsi, si un `Pod` ne fonctionne pas correctement un nouveau `Pod` sera créé et le `Pod` qui ne fonctionnait pas correctement sera arrêté. 
 
-* Créer dans le répertoire _exercice2-deployment/_ un fichier appelé _mydeployment.yaml_ en ajoutant le contenu suivant :
+* Créer dans le répertoire _exercice-deployment/_ un fichier appelé _mydeployment.yaml_ en ajoutant le contenu suivant :
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: exercicedeployment
   name: mydeployment
 spec:
   selector:
@@ -65,14 +66,14 @@ Dans cette configuration, nous retrouvons la description du `Pod` dans l'option 
 * Appliquer cette configuration pour créer ce `Deployment` dans le cluster Kubernetes :
 
 ```
-$ kubectl apply -f exercice2-deployment/mydeployment.yaml -n mynamespaceexercice2
+$ kubectl apply -f exercice-deployment/mydeployment.yaml -n exercicedeployment
 deployment.apps/mydeployment created
 ```
 
 * Vérifier que le `Pod` géré par ce `Deployment` est correctement créé :
 
 ```
-$ kubectl get pods -n mynamespaceexercice2 -o wide
+$ kubectl get pods -n exercicedeployment -o wide
 NAME                            READY   STATUS    RESTARTS   AGE   IP          NODE                  
 mydeployment-59f769b799-hpfvs   1/1     Running   0          21s   10.42.2.8   k3d-mycluster-agent-1
 ```
@@ -82,7 +83,7 @@ Nous remarquons que le nom du `Pod` n'est pas celui que nous avons donné dans l
 * Afficher également les informations de ce `Deployment` :
 
 ```
-$ kubectl get deployments.apps -n mynamespaceexercice2
+$ kubectl get deployments.apps -n exercicedeployment
 NAME           READY   UP-TO-DATE   AVAILABLE   AGE
 mydeployment   1/1     1            1           2m14s
 ```
@@ -90,9 +91,9 @@ mydeployment   1/1     1            1           2m14s
 * Nous pouvons également donner un détail complet de ce `Deployment` via l'option `describe` :
 
 ```
-$ kubectl describe deployments.apps -n mynamespaceexercice2 mydeployment
+$ kubectl describe deployments.apps -n exercicedeployment mydeployment
 Name:                   mydeployment
-Namespace:              mynamespaceexercice2
+Namespace:              exercicedeployment
 CreationTimestamp:      Tue, 07 Feb 2023 15:11:21 +0100
 Labels:                 <none>
 Annotations:            deployment.kubernetes.io/revision: 1
@@ -126,7 +127,7 @@ Events:
 
 La configuration d'un objet de type `Deployment` peut inclure le nombre de `Pods` à créér qui est de `un` (1) actuellement. Cette information permet donc de gérer la montée en charge horizontale en utilisant un objet de type `ReplicatSet`. Il est possible d'écrire une configuration de type `ReplicatSet` au même titre que ceux que nous avons déjà fait pour `Pod` ou `Deployment`. Toutefois, `Deployment` peut inclure cette information directement dans sa configuration. C'est de cette manière que nous présenterons `ReplicatSet`.
 
-* Modifier le fichier de configuration _exercice2-deployment/mydeployment.yaml_ de façon à intégrer les informations de réplication (clé `replicas`) :
+* Modifier le fichier de configuration _exercice-deployment/mydeployment.yaml_ de façon à intégrer les informations de réplication (clé `replicas`) :
 
 ```yaml
 apiVersion: apps/v1
@@ -155,20 +156,20 @@ Cette configuration de `Deployment` déclare maintenant que trois `Pods` basés 
 * Appliquer la nouvelle configuration :
 
 ```
-$ kubectl apply -f exercice2-deployment/mydeployment.yaml -n mynamespaceexercice2
+$ kubectl apply -f exercice-deployment/mydeployment.yaml -n exercicedeployment
 deployment.apps/mydeployment configured
 ```
 
 * Vérifions que les nouveaux `Pods` ont été créés :
 
 ```
-$ kubectl get pods -n mynamespaceexercice2 -o wide
+$ kubectl get pods -n exercicedeployment -o wide
 NAME                            READY   STATUS    RESTARTS   AGE    IP          NODE 
 mydeployment-59f769b799-hpfvs   1/1     Running   0          4m9s   10.42.2.8   k3d-mycluster-agent-1
 mydeployment-59f769b799-xkjhz   1/1     Running   0          18s    10.42.0.5   k3d-mycluster-server-0
 mydeployment-59f769b799-kbxwd   1/1     Running   0          18s    10.42.1.5   k3d-mycluster-agent-0
 
-$ kubectl get deployments.apps -n mynamespaceexercice2
+$ kubectl get deployments.apps -n exercicedeployment
 NAME           READY   UP-TO-DATE   AVAILABLE   AGE
 mydeployment   3/3     3            3           4m35s
 ```
@@ -182,7 +183,7 @@ Nous considérons dans la suite que nous disposons d'un `Deployment` qui gère t
 * Pour afficher l'historique de l'enroulement (_rollup_) en cours pour le `Deployment` `mydeployment` :
 
 ```
-$ kubectl rollout history deployment -n mynamespaceexercice2 mydeployment
+$ kubectl rollout history deployment -n exercicedeployment mydeployment
 deployment.apps/mydeployment
 REVISION  CHANGE-CAUSE
 1         <none>
@@ -191,14 +192,14 @@ REVISION  CHANGE-CAUSE
 * Comme constaté, il n'y a pas d'information sur la cause du changement. Pour renseigner la cause du changement :
 
 ```
-$ kubectl annotate deployments.apps -n mynamespaceexercice2 mydeployment kubernetes.io/change-cause="Image en 1.19"
+$ kubectl annotate deployments.apps -n exercicedeployment mydeployment kubernetes.io/change-cause="Image en 1.19"
 deployment.apps/mydeployment annotated
 ```
 
 * Afficher de nouveau l'historique de l'enroulement (_rollup_) en cours pour le `Deployment` `mydeployment` pour vérifier que la description dans la colonne `CHANGE-CAUSE` a été modifiée :
 
 ```
-$ kubectl rollout history deployment -n mynamespaceexercice2 mydeployment
+$ kubectl rollout history deployment -n exercicedeployment mydeployment
 deployment.apps/mydeployment
 REVISION  CHANGE-CAUSE
 1         Image en 1.19
@@ -209,16 +210,16 @@ Un seule révision est présente pour l'instant dans cet enroulement (_rollup_).
 * La version de l'image [Docker](https://www.docker.com/ "Docker") va être modifiée pour passer de la version `1.19` à la version `1.20`. Nous utiliserons l'option `set` de l'outil **kubectl** pour effecuter la modification : 
 
 ```
-$ kubectl set image -n mynamespaceexercice2 deployment mydeployment mycontainer=nginx:1.20
+$ kubectl set image -n exercicedeployment deployment mydeployment mycontainer=nginx:1.20
 deployment.apps/mydeployment image updated
-$ kubectl annotate deployments.apps -n mynamespaceexercice2 mydeployment kubernetes.io/change-cause="Image en 1.20"
+$ kubectl annotate deployments.apps -n exercicedeployment mydeployment kubernetes.io/change-cause="Image en 1.20"
 deployment.apps/mydeployment annotated
 ```
 
 * Afficher de nouveau l'historique de l'enroulement (_rollup_) pour le `Deployment` `mydeployment` :
 
 ```
-$ kubectl rollout history deployment -n mynamespaceexercice2 mydeployment
+$ kubectl rollout history deployment -n exercicedeployment mydeployment
 deployment.apps/mydeployment
 REVISION  CHANGE-CAUSE
 1         Image en 1.19
@@ -227,12 +228,13 @@ REVISION  CHANGE-CAUSE
 
 Deux révisions sont actuellement dans l'enroulement du `Deployment` `mydeployment`.
 
-* Créer un nouveau fichier de configuration `Deployment` nommé _exercice2-deployment/mydeployment121.yaml_ :
+* Créer un nouveau fichier de configuration `Deployment` nommé _exercice-deployment/mydeployment121.yaml_ :
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: exercicedeployment
   name: mydeployment
 spec:
   replicas: 3
@@ -254,18 +256,18 @@ spec:
 * Appliquer cette nouvelle configuration `Deployment` :
 
 ```
-$ kubectl apply -f exercice2-deployment/mydeployment121.yaml -n mynamespaceexercice2
+$ kubectl apply -f exercice-deployment/mydeployment121.yaml -n exercicedeployment
 deployment.apps/mydeployment configured
-$ kubectl annotate deployments.apps -n mynamespaceexercice2 mydeployment kubernetes.io/change-cause="Image en 1.21"
+$ kubectl annotate deployments.apps -n exercicedeployment mydeployment kubernetes.io/change-cause="Image en 1.21"
 deployment.apps/mydeployment annotated
 ```
 
-Même s'il s'agit d'un nouveau fichier de configuration, le nom du `Deployment` est le même que celui du fichier de configuration _exercice2-deployment/mydeployment.yaml_. Kubernetes va identifier qu'il s'agit du même `Deployment` et appliquer cette configuration. La seule modification apportée concerne la version de l'image [Docker](https://www.docker.com/ "Docker") qui passe de `1.20` à `1.21`.
+Même s'il s'agit d'un nouveau fichier de configuration, le nom du `Deployment` est le même que celui du fichier de configuration _exercice-deployment/mydeployment.yaml_. Kubernetes va identifier qu'il s'agit du même `Deployment` et appliquer cette configuration. La seule modification apportée concerne la version de l'image [Docker](https://www.docker.com/ "Docker") qui passe de `1.20` à `1.21`.
 
 * Afficher de nouveau l'historique de l'enroulement (_rollup_) pour le `Deployment` `mydeployment` :
 
 ```
-$ kubectl rollout history deployment -n mynamespaceexercice2 mydeployment
+$ kubectl rollout history deployment -n exercicedeployment mydeployment
 deployment.apps/mydeployment
 REVISION  CHANGE-CAUSE
 1         Image en 1.19
@@ -278,9 +280,9 @@ Une troisième révision est ajoutée à l'enroulement du `Deployment` `mydeploy
 * Afficher la description détaillée du `Deployment` `mydeployment` :
 
 ```
-$ kubectl describe deployments.apps -n mynamespaceexercice2 mydeployment
+$ kubectl describe deployments.apps -n exercicedeployment mydeployment
 Name:                   mydeployment
-Namespace:              mynamespaceexercice2
+Namespace:              exercicedeployment
 CreationTimestamp:      Tue, 07 Feb 2023 15:11:21 +0100
 Labels:                 <none>
 Annotations:            deployment.kubernetes.io/revision: 3
@@ -329,7 +331,7 @@ La version de l'image [Docker](https://www.docker.com/ "Docker") est bien à `1.
 * Utilisons l'option `rollout` pour revenir à une révision antérieure :
 
 ```
-$ kubectl rollout undo deployment mydeployment -n mynamespaceexercice2 --to-revision=1
+$ kubectl rollout undo deployment mydeployment -n exercicedeployment --to-revision=1
 deployment.apps/mydeployment rolled back
 ```
 
