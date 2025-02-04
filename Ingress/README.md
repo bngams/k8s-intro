@@ -42,10 +42,11 @@ metadata:
     app: backend
 spec:
   containers:
-  - name: backend
-    image: mickaelbaron/microservice-backend:1.0
-    ports:
-    - containerPort: 8080
+    - name: hello
+      image: "gcr.io/google-samples/hello-go-gke:1.0"
+      ports:
+        - name: http
+          containerPort: 80
 ```
 
 Appliquez le Pod :
@@ -64,16 +65,14 @@ kind: Pod
 metadata:
   name: frontend-pod
   labels:
-    app: frontend
+    app: hello
+    tier: frontend
 spec:
   containers:
-  - name: frontend
-    image: mickaelbaron/microservice-frontend:1.0
+  - name: nginx
+    image: "gcr.io/google-samples/hello-frontend:1.0"
     ports:
-    - containerPort: 8080
-    env:
-    - name: BACKEND_URL
-      value: "http://backend-service:8080"
+      - containerPort: 80
 ```
 
 Appliquez le Pod :
@@ -92,14 +91,14 @@ Créez un fichier `backend-service.yaml` :
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: hello
 spec:
   selector:
     app: backend
   ports:
   - protocol: TCP
-    port: 8080
-    targetPort: 8080
+    port: 80
+    targetPort: 80
   type: ClusterIP
 ```
 
@@ -117,14 +116,17 @@ Créez un fichier `frontend-service.yaml` :
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: frontend
+  labels:
+    name: frontend
 spec:
   selector:
-    app: frontend
+    app: hello
+    tier: frontend
   ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: 8080
+  - protocol: "TCP"
+    port: 80
+    targetPort: 80
   type: ClusterIP
 ```
 
@@ -150,20 +152,13 @@ spec:
   - host: myapp.local
     http:
       paths:
-      - path: /frontend
+      - path: /
         pathType: Prefix
         backend:
           service:
-            name: frontend-service
+            name: frontend
             port:
-              number: 8080
-      - path: /backend
-        pathType: Prefix
-        backend:
-          service:
-            name: backend-service
-            port:
-              number: 8080
+              number: 80
 ```
 
 Appliquez l'Ingress :
