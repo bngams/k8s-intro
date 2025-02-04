@@ -1,5 +1,8 @@
 Dans cet exercice, vous allez mettre en place des ressources de type NetworkPolicy de façon à isoler, au niveau network, les Pods qui tournent dans un namespace.
 
+> [!CAUTION]
+> Attention les NetworkPolicy ne sont pas supportées pas minikube par défaut. Le plus simple est de supprimer/démarrer un nouveau cluster avec les fonctionnalités réseaux associées: `minikube delete && minikube start --cni calico`
+
 ## Création d'un namespace
 
 Créez le namespace *demo*:
