@@ -19,6 +19,9 @@ Vous pouvez travailler dans un nouveau dossier `exercice2-services/`.
 
 Nous allons d'abord créer deux Pods : un serveur **frontend** et un serveur **backend**.
 
+> [!CAUTION]
+> /!\ Cela n'est pas précisé mais vous pouvez créer au préalable un Namespace auquel vous pouvez assigné tous les objets. Il sera d'autant plus simple de les supprimer à la fin de vos manipulations.
+
 ### a. Pod Backend
 
 Créez un fichier `backend-pod.yaml` :
