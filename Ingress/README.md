@@ -1,4 +1,4 @@
-# Exercice 4 : Utilisation des Ingress avec Minikube
+# Exercice 3 : Utilisation des Ingress avec Minikube
 
 Cet exercice vous permettra de comprendre comment utiliser des **Ingress** pour gérer l'accès à vos applications dans Kubernetes. Nous allons utiliser **Minikube** avec l'addon **Ingress** activé. Nous travaillerons directement avec des Pods et des Services.
 
